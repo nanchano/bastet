@@ -47,7 +47,7 @@ The Bastet service provides a REST layer to interact with events, allowing the c
 
 1. ./Dockerfile containerizes the app while docker-compose.yml orchestrates the containers.
 2. ./Makefile provides a user friendly layer on some typical commands run on the repo.
-3. ./cmd/bastet/main.go provides the main entrypoint of the service.
+3. ./cmd/bastet/main.go provides the main entrypoint of the service. The `main` function serves only as an orchestrator, instantiating the relevant components of the app and injecting them between themselves as needed.
 4. ./internal is a Go specific folder that encapsulates application specific code, restricting its imports into different projects.
 
   * ./internal/config defines the configuration needed for the app, database and server.
@@ -60,12 +60,25 @@ The Bastet service provides a REST layer to interact with events, allowing the c
 
 5. ./sql contains the SQLC YAML definitions as well as the schema and queries.
 
-Overall, the idea is to encapsulate the business logic in the `core` package (including validation and errors), while creating the necessary abstractions for the service to work. In this case, the only abstraction is the `Repository` interface, hiding the implementation details and delegating said responsibility to the relevant packages.
+## Repository Layer
+The Repository layer will implement the `core.Repository` interface so it can be injected into the service. As such, it needs to Create, Read, Update and Delete events from whatever database is chosen.
 
-The `Repository` interface is implemented in the `repository` package using Postgres SQL (which is heavily based on SQLC). If we were to change the database, it would be as simple as creating a new implementation with the new one, and instantiating it in main.
+The choice in this case was Postgres, heavily aided by SQLC, as it makes developing fast and easy, generating relevant code. We wrap around it though, injecting the SQLC Querier into the Repository, as it makes it cleaner and hides the SQLC implementation details from the Postgres repository itself.
 
-The `Server` is then injected into the server, which will parse HTTP requests, call the service to perform the operations, and send the relevant responses.
+There's an Event model defined here to avoid a dependency on the core Model and to properly manage some attributes, like `CreatedAt`, which are not present in the core model of the app.
 
-As such, the `main` function serves only as an orchestrator, instantiating the relevant components of the app and injecting them between themselves as needed.
+Due to dependency injection and the `core.Repository` abstraction, if we were to change the database, it would be as simple as creating a new implementation with the new one, and instantiating it in main.
+
+## Service layer
+Overall, the idea is to encapsulate the business logic in the `core` package (including validation and errors), while creating the necessary abstractions for the service to work. In this case, the only abstraction is the `Repository` interface (as it's the only 3rd party tool we need to the app to run), hiding the implementation details and delegating said responsibility to the relevant packages.
+
+A `Service` interface is also defined to clarify what the service needs to do and to be abstracted from the Server.
 
 A small caveat, theres a direct dependency on the `slog` package to log rather than hide it over a `Logger` interface to avoid over-engineering, as logging is something that doesn't usually change and the implementation of the interfaces can be tricky and time consuming.
+
+As such, the `Repository` is inserted into the `Service`, and will be called upon to perform the CRUD operations when relevant, after all the validations and parsing on the service has ocurred. Once the data is gathered, it will be returned to the next layer.
+
+## Server layer
+The `Server` is then injected into the server, which will parse HTTP requests, call the service to perform the operations, and send the relevant responses. The logic of parsing errors is also heavily based on the business use case errors defined in the `core` package.
+
+An slog Logger object is also injected into it to provide access to necessary logs such as request IDs, timestamps, cookies, or whatever HTTP-related information we need to save.
