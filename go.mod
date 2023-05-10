@@ -1,4 +1,4 @@
-module github.com/ticketpoint/bastet
+module github.com/nanchano/bastet
 
 go 1.20
 
