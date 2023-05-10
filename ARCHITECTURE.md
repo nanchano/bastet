@@ -49,10 +49,15 @@ The Bastet service provides a REST layer to interact with events, allowing the c
 2. ./Makefile provides a user friendly layer on some typical commands run on the repo.
 3. ./cmd/bastet/main.go provides the main entrypoint of the service.
 4. ./internal is a Go specific folder that encapsulates application specific code, restricting its imports into different projects.
-  a. ./internal/config defines the configuration needed for the app, database and server.
-  b. ./internal/core represents the main business use case of the app, creates the relevant abstractions to perform them, disregarding implementation details to the lower level layers. It does contain business logic and validation.
-  c. ./internal/repository contains the repository (database) implementation, in this case for Postgres, heavily based on the SQLC tool. Migrations are included here.
-  d. ./internal/server represents the REST layer of the service for the client to communicate.
+
+  * ./internal/config defines the configuration needed for the app, database and server.
+
+  * ./internal/core represents the main business use case of the app, creates the relevant abstractions to perform them, disregarding implementation details to the lower level layers. It does contain business logic and validation.
+
+  * ./internal/repository contains the repository (database) implementation, in this case for Postgres, heavily based on the SQLC tool. Migrations are included here.
+
+  * ./internal/server represents the REST layer of the service for the client to communicate.
+
 5. ./sql contains the SQLC YAML definitions as well as the schema and queries.
 
 Overall, the idea is to encapsulate the business logic in the `core` package (including validation and errors), while creating the necessary abstractions for the service to work. In this case, the only abstraction is the `Repository` interface, hiding the implementation details and delegating said responsibility to the relevant packages.
