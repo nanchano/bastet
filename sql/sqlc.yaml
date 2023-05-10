@@ -1,0 +1,16 @@
+version: "2"
+overrides:
+  go:
+    rename:
+      start_ts: "StartTS"
+      end_ts: "EndTS"
+sql:
+  - engine: "postgresql"
+    queries: "queries.sql"
+    schema: "schema.sql"
+    gen:
+      go:
+        package: "sqlc"
+        out: "../internal/repository/sqlc"
+        sql_package: "pgx/v4"
+        emit_interface: true
