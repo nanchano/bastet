@@ -1,7 +1,7 @@
 # Service Architecture and Design
 The Bastet service provides a REST layer to interact with events, allowing the client to perform Create, Read, Update and Delete on them. It follows clean architecture principles to make developing, maintaining and debugging the service easier. This document provides an overview of the major components, how they fit together, implementation details, and some design decisions.
 
-## App structure
+## App Structure
 ```bash
 ├── Dockerfile
 ├── Makefile
@@ -82,3 +82,14 @@ As such, the `Repository` is inserted into the `Service`, and will be called upo
 The `Server` is then injected into the server, which will parse HTTP requests, call the service to perform the operations, and send the relevant responses. The logic of parsing errors is also heavily based on the business use case errors defined in the `core` package.
 
 An slog Logger object is also injected into it to provide access to necessary logs such as request IDs, timestamps, cookies, or whatever HTTP-related information we need to save.
+
+## Tooling
+All tools are free and open source.
+
+`SQLC` is the tool of choice as a code generation tool for database operations as it's schema first and significantly reduces development time. Postgres is the database choice, along with the `pgx` library, due to performance.
+
+`chi` is chosen as the router as it's a minimal library, battle tested, with an intuitive API.
+
+`envconfig` and `godotenv` are chosen to manage configuration through environment variables, the recommended way of inserting secrets (or config) into containers.
+
+`slog` is chosen as the structured logging package as it's going to be added to the standard library when go 1.21 is released.
