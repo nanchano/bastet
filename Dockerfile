@@ -15,10 +15,12 @@ RUN go build -o /bastet ./cmd/bastet
 
 FROM scratch
 
+ARG PORT
+
 WORKDIR /app
 
 COPY --from=build /bastet /bastet
 
-EXPOSE 3333
+EXPOSE $PORT
 
 CMD [ "/bastet" ]

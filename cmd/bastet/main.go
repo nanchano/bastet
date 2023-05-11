@@ -31,5 +31,5 @@ func main() {
 	logger.Info("Starting servers")
 
 	server := server.New(logger, service)
-	server.Start()
+	server.Start(config.Server.Host, config.Server.Port)
 }
