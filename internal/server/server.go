@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -24,22 +25,20 @@ func New(l *slog.Logger, s core.BastetService) *server {
 }
 
 // Start starts the server
-func (s server) Start() {
-	s.logger.Info("Starting server on port 3333")
+func (s server) Start(host, port string) {
+	s.logger.Info(fmt.Sprintf("Starting server on %s:%s", host, port))
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger, middleware.RequestID)
 
-	r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("pong"))
-	})
+	r.Get("/ping", s.Ping)
 
 	r.Post("/bastet", s.CreateEvent)
 	r.Get("/bastet/{event_id}", s.GetEvent)
 	r.Put("/bastet/{event_id}", s.UpdateEvent)
 	r.Delete("/bastet/{event_id}", s.DeleteEvent)
 
-	http.ListenAndServe(":3333", r)
+	http.ListenAndServe(fmt.Sprintf(":%s", port), r)
 
 	s.logger.Info("Serving")
 }
