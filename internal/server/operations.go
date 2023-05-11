@@ -8,6 +8,11 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+// Ping checks the server is running
+func (s server) Ping(w http.ResponseWriter, r *http.Request) {
+	renderResponse(w, "pong")
+}
+
 // Create event receives a request and calls the service to create a new event
 // given the payload, sending the event itself as a response afterwards.
 // If unsuccessful, an error response will be sent.
