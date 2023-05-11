@@ -23,7 +23,7 @@ DB_PORT=5432
 ## Test the server
 Some basic curl commands are provided for convenience to actually test the server is operating right.
 
-### POST
+### PING
 ```bash
 curl http://localhost:3333/ping
 ```
