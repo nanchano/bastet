@@ -30,13 +30,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - PORT=${SERVER_PORT}
     depends_on:
       postgres:
         condition: service_started
     ports:
-      - 3333:3333
+      - ${SERVER_PORT}:${SERVER_PORT}
     expose:
-      - 3333
+      - ${SERVER_PORT}
     volumes:
       - ./:/app
     networks:
