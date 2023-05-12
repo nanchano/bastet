@@ -60,7 +60,7 @@ The Bastet service provides a REST layer to interact with events, allowing the c
 
 5. ./sql contains the SQLC YAML definitions as well as the schema and queries.
 
-## Repository Layer
+## Repository layer
 The Repository layer will implement the `core.Repository` interface so it can be injected into the service. As such, it needs to Create, Read, Update and Delete events from whatever database is chosen.
 
 The choice in this case was Postgres, heavily aided by SQLC, as it makes developing fast and easy, generating relevant code. We wrap around it though, injecting the SQLC Querier into the Repository, as it makes it cleaner and hides the SQLC implementation details from the Postgres repository itself.
@@ -79,7 +79,7 @@ A small caveat, theres a direct dependency on the `slog` package to log rather t
 As such, the `Repository` is inserted into the `Service`, and will be called upon to perform the CRUD operations when relevant, after all the validations and parsing on the service has ocurred. Once the data is gathered, it will be returned to the next layer.
 
 ## Server layer
-The `Server` is then injected into the server, which will parse HTTP requests, call the service to perform the operations, and send the relevant responses. The logic of parsing errors is also heavily based on the business use case errors defined in the `core` package.
+The `Service` is then injected into the server, which will parse HTTP requests, call the service to perform the operations, and send the relevant responses. The logic of parsing errors is also heavily based on the business use case errors defined in the `core` package.
 
 An slog Logger object is also injected into it to provide access to necessary logs such as request IDs, timestamps, cookies, or whatever HTTP-related information we need to save.
 
