@@ -3,7 +3,7 @@ package core
 import (
 	"context"
 
-	"golang.org/x/exp/slog"
+	"log/slog"
 )
 
 // BastetService is the main usecase of the app, centered around event CRUD operations.
