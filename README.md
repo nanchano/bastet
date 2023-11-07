@@ -23,36 +23,13 @@ DB_PORT=5432
 ## Test the server
 Some basic curl commands are provided for convenience to actually test the server is operating right.
 
-### PING
-```bash
-curl http://localhost:3333/ping
-```
+1. Ping: `make ping`
+2. Create an event: `make create-event`
+3. Get an event: `make get-event`
+4. Update an event: `make update-event`
+5. Delete an event: `make delete-event`
+6. Run CRUD: `make all-requests`
 
-### POST
-```bash
-curl -X POST \
-    -H "Content-Type: application/json" \
-    -d '{"name": "Random Event", "description": "a random test event", "category": "random", "location": "Buenos Aires", "publisher": "Nico", "lineup": ["Random Artits"], "start_ts": "2023-01-01T18:00:00Z","end_ts": "2023-01-01T21:00:00Z"}' \
-    http://localhost:3333/bastet
-```
-
-### GET
-```bash
-curl http://localhost:3333/bastet/1
-```
-
-### UPDATE
-```bash
-curl -X PUT \
-    -H "Content-Type: application/json" \
-    -d '{"description": "Changed Description"}' \
-    http://localhost:3333/bastet/1
-```
-
-### DELETE
-```bash
-curl -X DELETE http://localhost:3333/bastet/1
-```
 
 ## TBD
 1. Deployment github workflow.

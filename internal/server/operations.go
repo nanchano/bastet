@@ -24,7 +24,6 @@ func (s server) CreateEvent(w http.ResponseWriter, r *http.Request) {
 		renderErrorResponse(w, r, err)
 		return
 	}
-	s.logger.Info("Create event request received with body: %v", &event)
 
 	e, err := s.service.CreateEvent(r.Context(), event.toCoreEvent())
 	if err != nil {
@@ -33,7 +32,6 @@ func (s server) CreateEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.logger.Info("Successfully created the event")
 	renderResponse(w, e)
 }
 
@@ -42,9 +40,8 @@ func (s server) CreateEvent(w http.ResponseWriter, r *http.Request) {
 // If unsuccessful, an error response will be sent.
 func (s server) GetEvent(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "event_id"), 10, 64)
-	s.logger.Info("Finding event for ID: %v", id)
 	if err != nil {
-		s.logger.Error("Failed parsing the request")
+		s.logger.Error("Failed parsing the request, could not parse the event ID")
 		renderErrorResponse(w, r, err)
 		return
 	}
@@ -56,7 +53,6 @@ func (s server) GetEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.logger.Info("Successfully found the event")
 	renderResponse(w, e)
 }
 
@@ -71,7 +67,6 @@ func (s server) UpdateEvent(w http.ResponseWriter, r *http.Request) {
 		renderErrorResponse(w, r, err)
 		return
 	}
-	s.logger.Info("Update event request received with body: %v", &event)
 
 	if event.ID == 0 {
 		id, err := strconv.ParseInt(chi.URLParam(r, "event_id"), 10, 64)
@@ -90,7 +85,6 @@ func (s server) UpdateEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.logger.Info("Successfully updated the event")
 	renderResponse(w, e)
 }
 
@@ -99,9 +93,8 @@ func (s server) UpdateEvent(w http.ResponseWriter, r *http.Request) {
 // If unsuccessful, an error response will be sent.
 func (s server) DeleteEvent(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "event_id"), 10, 64)
-	s.logger.Info("Deleting event for ID: %v", id)
 	if err != nil {
-		s.logger.Error("Failed parsing the request")
+		s.logger.Error("Failed parsing the request, could not parse the event ID")
 		renderErrorResponse(w, r, err)
 		return
 	}
@@ -113,6 +106,5 @@ func (s server) DeleteEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.logger.Info("Successfully deleted the event")
 	renderResponse(w, map[string]interface{}{})
 }

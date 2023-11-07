@@ -2,12 +2,12 @@ package server
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/nanchano/bastet/internal/core"
-	"golang.org/x/exp/slog"
 )
 
 // server represents the HTTP layer of the app, requiring a server to act.
